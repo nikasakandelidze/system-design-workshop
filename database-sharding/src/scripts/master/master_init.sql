@@ -33,3 +33,25 @@ into shard_2_schema;
 -- Create foreign tables for using proxying queries to remote shards.
 create foreign table student_shard_1 (check(location='london')) inherits(student) server remote_server_1;
 create foreign table student_shard_2 (check(location='london')) inherits(student) server remote_server_2;
+
+--==============
+--Procedure returns trigger which load balances elements into shards of separate nodes
+create or replace function student_trigger_fn() returns trigger as
+$$
+begin
+    
+    if new.location = 'paris' then
+        insert into student_shard_1 values(new.*);
+        return null;
+    elsif new.location = 'london' then
+        insert into student_shard_2 values(new.*);
+        return null;
+    end if;
+    return null;
+end
+$$
+language plpgsql;
+
+
+create trigger student_trigger_fn before insert on student for each row execute procedure student_trigger_fn(); 
+--==============
