@@ -45,3 +45,23 @@ active node to new passive one to avoid futher failures.
 - Consensus based replication: Raft, Paxos and other mechanisms. There are bunch of nodes up all the time, one of them master and other slaves. Master
 node gets all insert nodes and then replicates new state to all the slaves. Read queries might go to any slaves this way we have one and the same log/
 data on many nodes and we aren't tied to a particular node, this way we can cope with failures of couple of nodes. 
+
+#### 2.1 Reacting to failures
+Even though we can write tons of exception handling catch-es and think of all possible failures to catch react them and not let them fail the program, there
+will always be failures that arise due to several factors: machine error, software error, human error. reactive application should be ready to react to
+these kinds of failures. and by "react" i mean that software should be able to react to failure notify appropriate service/person about the failure and handle
+it gracefully ( according to context ).
+One interesting fact is that exceptions, like connection, null pointer and etc aren't only failures that might arise, there might be failures in context of
+logical execution for example timeout. If our service has a dependency on another service and remote service receives request but delays response too much, 
+we can say that it is same problem/exception as in process exception since no response is delievered to user.
+In the distributed world due to network and other bunch of problems this case above might easily appear, letting our service make further network calls to remote
+hanging service is not a good strategy since, this will potentially only make things worse.
+A common pattern for reacting to intensive failures/timeouts/problems in distributed systems is the pattern of Circuit braker, the logic behind it is very simple:
+monitor all network calling dependencies outgoing from our service to remote services. If count of failed network calls exceeds some predefined thershold than open
+the circuit braker. Any further calls coming to circuit braker and asking to call remote service will trip and follow some fallback mechanism ( like maybe returning
+cached data, or returning default data, or returning specialized message ). In the background circuit braker will check remote service for availability and only will
+come back to being useful when it assures that remote service is online and fully functional.
+This way remote service won't get flooded with requests and it will make it's regeneration process even faster.
+
+
+back 
