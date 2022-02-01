@@ -1,0 +1,64 @@
+version: '3'
+services:
+
+  master:
+    image: postgres:13
+    container_name: postgres_master
+    hostname: master-db
+    platform: amd64
+    depends_on:
+        - shard_1
+        - shard_2
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    volumes:
+        - pgdata_1:/var/lib/postgresql/data
+        - ./scripts/master/master_init.sql:/docker-entrypoint-initdb.d/init_master_table.sql
+    restart: always
+    ports:
+        - 5433:5432
+    networks:
+        - postgres_net
+  
+  shard_1:
+    image: postgres:13
+    container_name: postgres_shard_1
+    hostname: shard-1-db
+    platform: amd64
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    volumes:
+        - pgdata_2:/var/lib/postgresql/data
+        - ./scripts/shards/shard_1_init.sql:/docker-entrypoint-initdb.d/shard_init.sql
+    restart: always
+    ports:
+        - 5435:5432
+    networks:
+        - postgres_net
+    
+  shard_2:
+    image: postgres:13
+    container_name: postgres_shard_2
+    hostname: shard-2-db
+    platform: amd64
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    volumes:
+        - pgdata_3:/var/lib/postgresql/data
+        - ./scripts/shards/shard_2_init.sql:/docker-entrypoint-initdb.d/shard_init.sql
+    restart: always
+    ports:
+        - 5436:5432
+    networks:
+        - postgres_net
+    
+networks:
+    postgres_net:
+
+volumes:
+    pgdata_1:
+    pgdata_2:
+    pgdata_3:
