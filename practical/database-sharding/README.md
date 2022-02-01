@@ -14,6 +14,4 @@ Idea of the script/application is to move 1 "big" database into 2 distributed sm
 
 # Setup
 - Run `docker-compose up -d`
-- Update auth. conf file for shard database, for it to receive master traffic. pg_hba.conf file in shard database using next command: `docker exec -it shard bash && echo "host all all 0.0.0.0/0 trust" >> /var/lib/postgresql/data/pg_hba.conf`
-- Exit container shell: `exit`
-- Restart shard docker container: `docker restart postgres_shard`
+After running it, 3 containers will start up. 1 master which plays the role of delegator, since it doesn't store any data in itself. and 2 shard nodes.
