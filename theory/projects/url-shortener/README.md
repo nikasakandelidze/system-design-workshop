@@ -91,5 +91,10 @@ This way:
 - If one server fails, information about what range was used by it and where did it stop won't be lost. it will still be available in zookeeper store for new nodes to use,  
 - If one server reaches the limit of it's counter it can easily ask zookeeper to assign to it a new range of values to use.
 
-
+## Counting redirect requests
+One last mechanism that we need to go through is how to count number of redirection requests for each url.
+It is trivial that we'll need a new field for data model, the field called: "counter". But now the question arises: since redirection of the user must be
+reactive/fast/low latency we can't increase the complexity and time usage for the main flow of the application which fetches original link from database, it should be minimallistic.
+For this problem we can introduce kafka or other reliable streaming solution. our main application flow will asyncrhonously ( wihtout hanging ) will send new redirect message to kafka ( as an event producer ).
+On the other side we can write kafka consumer application which will fetch for new redirectm messages and increase counter values for each redirection events.
 
