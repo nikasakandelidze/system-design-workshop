@@ -61,12 +61,35 @@ This means that several servers might easily create a race condition ( if 2 or m
 before they insert they check and all validate that no current Base62 value is present and all put, latest one will overwrite prev. values.
 (This case is very well possible since base62 encoding doesn't guarantee uniqueness of output in any way ) and we could easily use another alias generation
 mechanism as well ( md5, base64 or etc ) but all of them will suffer due to race condition problem.
-![Diagaram for bse62](./base62-diagram)
+
+![Diagaram for bse62](./base62-diagram.jpeg)
+
 
 NOTICE: So this solution of business logic is no good because of race condition
 
-### Case 2
+### Case 2 ( Correct solution )
 The main problem with the previous solution was that several instances of the application servers weren't synchronized between each other for url generation,
 so bad things could have happened. For use we'll need to out-source the synchronization and alias generation logic from main server app, for all of them
 to be able to be on the same page and synchronize/coordinate. 
+General mechanism we will use is very simple, we will use counters. Yep, simple counters. Let's think of several cases.
+It is no good if all servers will have their own local counters. Since next are cases that server-local mechanism won't solve:
+- if one server fails that we don't have global knoweledge of where it stopped so that we can spin up another server to continue where first stopped.
+- if one server reaches counter limit, this server will become non functional since we don't have any external mechanism to give it a new range of counter to continue working.
+
+Solution to this problem as we told will be to have an external mechanism/application that will itself be highly avaiable and distributed and that will coordinate
+all our server nodes to provide them appropriate counter values.
+Zookeeper is this kind of software, it's definition sounds like this: Zookeeper is basically a distributed coordination service that manages a large set of hosts.
+It keeps track of all the things such as the naming of the servers, active servers, dead servers, configuration information of all the hosts.
+It provides coordination and maintains the synchronization between the multiple servers. 
+
+![Diagram for zookeeper solution](./zookeeper-diagram.jpeg)
+
+So using zookeeper our mechanism becomes next:
+Zookeeper will store the state of what are currently active counters ( currently active counters that servers use ) and what are ranges for each server. 
+Every server will have their non-overlapping range ( which will guarantee that they'll generate unique aliases and won't need to check before insertion).
+This way:
+- If one server fails, information about what range was used by it and where did it stop won't be lost. it will still be available in zookeeper store for new nodes to use,  
+- If one server reaches the limit of it's counter it can easily ask zookeeper to assign to it a new range of values to use.
+
+
 
