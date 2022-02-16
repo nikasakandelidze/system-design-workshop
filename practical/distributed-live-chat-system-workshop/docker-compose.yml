@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  lb:
+    image: haproxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy
+    depends_on:
+      - ws1
+      - ws2
+      - ws3
+      - ws4
+  ws1:
+    image: wsapp
+    environment:
+      - APPID=1
+  ws2:
+    image: wsapp
+    environment:
+      - APPID=2
+  ws3:
+    image: wsapp
+    environment:
+      - APPID=3
+  ws4:
+    image: wsapp
+    environment:
+      - APPID=4
+  rds:
+    image: redis

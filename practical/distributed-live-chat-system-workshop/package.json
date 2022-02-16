@@ -1,0 +1,26 @@
+{
+  "name": "live-chat-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://$(gettoken):x-oauth-basic@github.com/nikasakandelidze/live-chat-system.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikasakandelidze/live-chat-system/issues"
+  },
+  "homepage": "https://github.com/nikasakandelidze/live-chat-system#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http": "^0.0.1-security",
+    "redis": "^3.1.2",
+    "websocket": "^1.0.34"
+  }
+}
