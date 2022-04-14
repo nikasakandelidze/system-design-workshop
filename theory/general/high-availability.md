@@ -43,9 +43,9 @@ When i first heard 90% availabilty i thought that wow that's so much, users migh
 But sadly, life aint so easy. 10% of downtime per year is 36.5 days of downtime per year. Now just think if facebook or youtube didn't function for 36.5 days per year.
 It would be literally devestating, and now think if some airport management system went down 36.5 times per year. lot's and lot's of airplanes would crash without a doubt.
 
-Most of modern day systems with high throughput and load try to reach >99.99999% availability. Which is only 5.26 minutes of downtime per year. Which is without a doubt
+Most of modern day systems with high throughput and load try to reach >99.999% availability. Which is only 5.26 minutes of downtime per year. Which is without a doubt
 bareable. This standard/thershold is known as High availabilty point, all the systems that have availabilty coefficient of more then or equal to 5 Nines is considered
 as a highly available system. 
 Of course this is mostly following common convetions, term high availabilty might fluxuate between organizations and between clients. Someone might have service level agreement
-of calling 99.999% already highly available and so on.
+of calling 99.9% already highly available and so on.
 
