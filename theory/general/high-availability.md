@@ -49,3 +49,5 @@ as a highly available system.
 Of course this is mostly following common convetions, term high availabilty might fluxuate between organizations and between clients. Someone might have service level agreement
 of calling 99.9% already highly available and so on.
 
+Basic framework for achieveing high availabilty is via redundancy. Having redundant, access, copies of same components ( servers, nodes, databases, hardware.. )
+will let you to direct traffic to another instance in case of failure of main component.
